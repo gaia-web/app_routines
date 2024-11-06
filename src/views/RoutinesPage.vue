@@ -189,13 +189,10 @@ const daysOfCurrentWeek = ref<Temporal.PlainDate[]>([]);
 const currentPageIndex = ref(0);
 
 watch(editingViewEnabled, async (value) => {
-  if (value) {
-    routineSelections.value = new Array(appData.value.routines.length);
-    const swiper = swiperRef.value?.swiper;
-    if (swiper) {
-      swiper.allowTouchMove = !value;
-    }
-    return;
+  routineSelections.value = new Array(appData.value.routines.length);
+  const swiper = swiperRef.value?.swiper;
+  if (swiper) {
+    swiper.allowTouchMove = !value;
   }
 });
 
