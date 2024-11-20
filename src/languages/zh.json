@@ -1,0 +1,13 @@
+{
+  "hello": "你好",
+  "intro": "点击{msg1} + 来添加{msg2}日程",
+  "listExample": "展示{1}日程",
+  "literalExample": "电子邮箱: {account}{'@'}{domain}",
+  "linkExample": "链接例子 @:message.hello",
+  "settingColorTheme": "主题色",
+  "settingFirstDayofWeek": "每周首日",
+  "settingImportAppData": "导入数据",
+  "settingExportAppData": "导出数据",
+  "settingSyncAppData": "同步数据",
+  "settingVersion": "版本"
+}

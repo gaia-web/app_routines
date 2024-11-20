@@ -1,0 +1,13 @@
+{
+  "hello": "hello",
+  "intro": "Clilck bottom {msg1} + to add new {msg2} routine",
+  "listExample": "list {0} routine",
+  "literalExample": "Email: {account}{'@'}{domain}",
+  "linkExample": "link example @:message.hello",
+  "settingColorTheme": "Color Theme",
+  "settingFirstDayofWeek": "FirstDayofWeek",
+  "settingImportAppData": "Import App Data",
+  "settingExportAppData": "Export App Data",
+  "settingSyncAppData": "Sync App Data",
+  "settingVersion": "Version"
+}

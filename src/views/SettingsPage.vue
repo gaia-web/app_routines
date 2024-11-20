@@ -20,7 +20,7 @@
           <ion-item width="full">
             <ion-icon slot="start" :icon="contrastOutline"></ion-icon>
             <ion-select
-              label="Color Theme"
+              :label="$t(message.settingColorTheme)"
               aria-label="theme"
               interface="popover"
               v-model="themeType"
@@ -37,7 +37,7 @@
           </ion-item-divider>
           <ion-item>
             <ion-icon slot="start" :icon="settingsOutline"></ion-icon>
-            <ion-select label="First Day of Week" v-model="firstDayOfWeek">
+            <ion-select :label="$t(message.settingFirstDayofWeek)" v-model="firstDayOfWeek">
               <ion-select-option value="auto"
                 >Auto (today as last day)</ion-select-option
               >
@@ -58,15 +58,15 @@
           </ion-item-divider>
           <ion-item button @click="importAppData">
             <ion-icon slot="start" :icon="openOutline"></ion-icon>
-            <ion-label> Import App Data </ion-label>
+            <ion-label> {{ $t(message.settingImportAppData) }} </ion-label>
           </ion-item>
           <ion-item button @click="exportAppData">
             <ion-icon slot="start" :icon="saveOutline"></ion-icon>
-            <ion-label> Export App Data </ion-label>
+            <ion-label> {{ $t(message.settingExportAppData) }} </ion-label>
           </ion-item>
           <ion-item button>
             <ion-icon slot="start" :icon="syncOutline"></ion-icon>
-            <ion-label> Sync App Data </ion-label>
+            <ion-label> {{ $t(message.settingSyncAppData) }} </ion-label>
           </ion-item>
         </ion-item-group>
         <ion-item-group>
@@ -75,7 +75,7 @@
           </ion-item-divider>
           <ion-item>
             <ion-icon slot="start" :icon="hammerOutline"></ion-icon>
-            <ion-label> Version </ion-label>
+            <ion-label> {{ $t(message.settingVersion) }} </ion-label>
             <ion-note slot="end" color="medium">0.0.0</ion-note>
           </ion-item>
         </ion-item-group>
@@ -116,6 +116,7 @@ import { appStorage } from "@/utils/storage";
 import { AppData } from "@/utils/app-data";
 import { getWeekDays, getFirstDayOfWeek, getWeekDayName } from "@/utils/day";
 import { Temporal } from "@js-temporal/polyfill";
+import { message } from '../messages'
 
 const locale = ref(navigator.language ?? "en-US");
 

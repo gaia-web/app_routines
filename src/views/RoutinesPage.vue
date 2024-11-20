@@ -78,7 +78,11 @@
           <swiper-slide v-for="i in pageCount" :key="i" :virtualIndex="i">
             <ion-list>
               <div v-if="appData?.routines?.length <= 0">
-                Click bottom right + to add new routine.
+                {{ $t(message.hello, {msg1: 'right', msg2: 'new'}) }}
+                {{ $t(message.intro)}}
+                {{ $t(message.listExample, ['first in en', '第二个中文'])}}
+                {{ $t(message.literalExample, {account: 'foo', domain: 'bar'})}}
+                {{ $t(message.linkExample)}}
               </div>
               <ion-reorder-group
                 :disabled="!editingViewEnabled"
@@ -171,6 +175,7 @@ import {
 import Swiper from "swiper";
 import { getWeekDays, getFirstDayOfWeek } from "@/utils/day";
 import { Temporal } from "@js-temporal/polyfill";
+import { message } from '../messages'
 
 registerSwiper();
 

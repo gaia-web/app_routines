@@ -23,10 +23,23 @@ import "@ionic/vue/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import { createI18n } from "vue-i18n";
+import { EN_MESSAGE, ZH_MESSAGE } from "./messages.ts";
 
 const app = createApp(App).use(IonicVue).use(router);
 
+const i18n = createI18n({
+  // locale: navigator.language ?? "zh",
+  locale: "zh",
+  fallbackLocale: "en",
+  messages: {
+    en: EN_MESSAGE,
+    zh: ZH_MESSAGE,
+  },
+});
+
 router.isReady().then(() => {
+  app.use(i18n);
   app.mount("#app");
 });
 
