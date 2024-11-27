@@ -29,7 +29,7 @@ declare global {
 let alreadyInstalled = false;
 let installPrompt: BeforeInstallPromptEvent | null = null;
 
-const isInstallationPromptOpen = ref(true);
+const isInstallationPromptOpen = ref(false);
 const installationPromptButtons = [
   {
     text: 'Install',
@@ -54,5 +54,6 @@ self.addEventListener('beforeinstallprompt', async (event) => {
   }
   event.preventDefault();
   installPrompt = event;
+  isInstallationPromptOpen.value = true;
 });
 </script>
