@@ -1,59 +1,29 @@
 <template>
   <ion-app>
     <ion-router-outlet />
-    <ion-toast :is-open="isInstallationPromptOpen"
-      message="This app can be installed on your device for a better user experience." :duration="5000"
-      :buttons="installationPromptButtons"></ion-toast>
   </ion-app>
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonRouterOutlet, IonToast } from '@ionic/vue';
-import { ref } from 'vue';
-
-interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: "accepted" | "dismissed";
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
-}
-
-declare global {
-  interface WindowEventMap {
-    beforeinstallprompt: BeforeInstallPromptEvent;
-  }
-}
+import { IonApp, IonRouterOutlet } from '@ionic/vue';
+import { provide, ref } from 'vue';
+import { BeforeInstallPromptEvent } from './before-install-prompt-event';
 
 let alreadyInstalled = false;
-let installPrompt: BeforeInstallPromptEvent | null = null;
+const beforeinstallpromptEvent = ref<BeforeInstallPromptEvent | null>(null);
 
-const isInstallationPromptOpen = ref(false);
-const installationPromptButtons = [
-  {
-    text: 'Install',
-    role: 'info',
-    handler: async () => {
-      await installPrompt?.prompt();
-    },
-  },
-  {
-    text: 'Dismiss',
-    role: 'cancel'
-  },
-];
+provide('beforeinstallpromptEvent', beforeinstallpromptEvent);
 
 self.addEventListener("appinstalled", () => {
   alreadyInstalled = true;
+  beforeinstallpromptEvent.value = null;
 });
 
 self.addEventListener('beforeinstallprompt', async (event) => {
-  if (alreadyInstalled) {
+  if (alreadyInstalled || localStorage.getItem('havePromptedInstallation')) {
     return;
   }
   event.preventDefault();
-  installPrompt = event;
-  isInstallationPromptOpen.value = true;
+  beforeinstallpromptEvent.value = event;
 });
 </script>

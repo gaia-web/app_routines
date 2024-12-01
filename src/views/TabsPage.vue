@@ -18,6 +18,12 @@
             <ion-icon aria-hidden="true" :icon="settings" />
             <ion-label>Settings</ion-label>
           </ion-tab-button>
+
+          <ion-tab-button v-if="beforeinstallpromptEventRef" tab="install"
+            @click="beforeinstallpromptEventRef.prompt()">
+            <ion-icon aria-hidden="true" :icon="download" />
+            <ion-label>Install</ion-label>
+          </ion-tab-button>
         </ion-tab-bar>
       </ion-tabs>
     </Suspense>
@@ -25,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import { BeforeInstallPromptEvent } from "@/before-install-prompt-event";
 import {
   IonTabBar,
   IonTabButton,
@@ -34,5 +41,8 @@ import {
   IonPage,
   IonRouterOutlet,
 } from "@ionic/vue";
-import { checkmarkDone, settings, statsChart } from "ionicons/icons";
+import { checkmarkDone, download, settings, statsChart } from "ionicons/icons";
+import { inject, Ref } from "vue";
+
+const beforeinstallpromptEventRef = inject<Ref<BeforeInstallPromptEvent | null>>('beforeinstallpromptEvent');
 </script>
