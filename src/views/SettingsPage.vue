@@ -58,15 +58,19 @@
           </ion-item-divider>
           <ion-item button @click="importAppData">
             <ion-icon slot="start" :icon="openOutline"></ion-icon>
-            <ion-label> Import App Data </ion-label>
+            <ion-label> Import App Data (Local) </ion-label>
           </ion-item>
           <ion-item button @click="exportAppData">
             <ion-icon slot="start" :icon="saveOutline"></ion-icon>
-            <ion-label> Export App Data </ion-label>
+            <ion-label> Export App Data (Local) </ion-label>
           </ion-item>
-          <ion-item button>
-            <ion-icon slot="start" :icon="syncOutline"></ion-icon>
-            <ion-label> Sync App Data </ion-label>
+          <ion-item button @click="backupAppData">
+            <ion-icon slot="start" :icon="cloudUploadOutline"></ion-icon>
+            <ion-label> Backup App Data (OneDrive) </ion-label>
+          </ion-item>
+          <ion-item button @click="restoreAppData">
+            <ion-icon slot="start" :icon="cloudDownloadOutline"></ion-icon>
+            <ion-label> Restore App Data (OneDrive) </ion-label>
           </ion-item>
         </ion-item-group>
         <ion-item-group>
@@ -102,6 +106,8 @@ import {
   IonList,
 } from "@ionic/vue";
 import {
+  cloudDownloadOutline,
+  cloudUploadOutline,
   contrastOutline,
   hammerOutline,
   saveOutline,
@@ -116,6 +122,10 @@ import { appStorage } from "@/utils/storage";
 import { AppData } from "@/utils/app-data";
 import { getWeekDays, getFirstDayOfWeek, getWeekDayName } from "@/utils/day";
 import { Temporal } from "@js-temporal/polyfill";
+import { PublicClientApplication } from "@azure/msal-browser";
+
+const APPROOT_API_ENDPOINT =
+  "https://graph.microsoft.com/v1.0/me/drive/special/approot";
 
 const locale = ref(navigator.language ?? "en-US");
 
@@ -159,4 +169,86 @@ const exportAppData = async () => {
   aElement.download = "AppData.json";
   aElement.click();
 };
+
+async function backupAppData() {
+  if (
+    !confirm(
+      "This action would override your previous backup (if any) on your OneDrive, still proceed?"
+    )
+  ) {
+    return;
+  }
+  const accessToken = await obtainAccessToken();
+  const appData: AppData = await appStorage.get(STORAGE_KEYS.APP_DATA);
+  const blob = new Blob([JSON.stringify(appData)]);
+  const result = await fetch(
+    `${APPROOT_API_ENDPOINT}:/routines.appdata.json:/content`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: blob,
+    }
+  ).then((res) => res.ok);
+  if (!result) {
+    alert("Fail to backup.");
+  }
+  alert("Backed up.");
+}
+
+async function restoreAppData() {
+  if (
+    !confirm("This action would override your local app data, still proceed?")
+  ) {
+    return;
+  }
+  const accessToken = await obtainAccessToken();
+  const result = await fetch(
+    `${APPROOT_API_ENDPOINT}:/routines.appdata.json:/content`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  ).then((res) => (res.ok ? res.json() : null));
+  if (result == null) {
+    alert("Fail to restore.");
+    return;
+  }
+  // TODO add validation
+  await appStorage.set(STORAGE_KEYS.APP_DATA, result);
+  // TODO use ionic alert and show errors if happend
+  alert("Restored");
+}
+
+async function obtainAccessToken() {
+  const CLIENT_ID = "2b6b1fc8-6a79-4335-8771-f7e89d075145";
+  const TENANT_ID = "consumers";
+  const msalConfig = {
+    auth: {
+      clientId: CLIENT_ID,
+      authority: `https://login.microsoftonline.com/${TENANT_ID}`,
+      redirectUri: "http://localhost:5173/auth",
+    },
+    cache: {
+      cacheLocation: "localStorage",
+      storeAuthStateInCookie: false,
+    },
+  };
+  const msalInstance = new PublicClientApplication(msalConfig);
+  await msalInstance.initialize();
+  const loginRequest = {
+    scopes: ["Files.ReadWrite.AppFolder"],
+  };
+  const loginResponse = await msalInstance.loginPopup(loginRequest);
+  msalInstance.setActiveAccount(loginResponse.account);
+  const tokenRequest = { ...loginRequest, account: loginResponse.account };
+  const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+
+  return tokenResponse.accessToken;
+}
 </script>
