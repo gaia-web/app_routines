@@ -232,7 +232,7 @@ async function obtainAccessToken() {
     auth: {
       clientId: CLIENT_ID,
       authority: `https://login.microsoftonline.com/${TENANT_ID}`,
-      redirectUri: "http://localhost:5173/auth",
+      redirectUri: `${location.origin}/auth`,
     },
     cache: {
       cacheLocation: "localStorage",
