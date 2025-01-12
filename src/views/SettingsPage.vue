@@ -19,12 +19,7 @@
           </ion-item-divider>
           <ion-item width="full">
             <ion-icon slot="start" :icon="contrastOutline"></ion-icon>
-            <ion-select
-              label="Color Theme"
-              aria-label="theme"
-              interface="popover"
-              v-model="themeType"
-            >
+            <ion-select label="Color Theme" aria-label="theme" interface="popover" v-model="themeType">
               <ion-select-option value="system">System</ion-select-option>
               <ion-select-option value="dark">Dark</ion-select-option>
               <ion-select-option value="light">Light</ion-select-option>
@@ -38,17 +33,11 @@
           <ion-item>
             <ion-icon slot="start" :icon="settingsOutline"></ion-icon>
             <ion-select label="First Day of Week" v-model="firstDayOfWeek">
-              <ion-select-option value="auto"
-                >Auto (today as last day)</ion-select-option
-              >
-              <ion-select-option
-                v-for="(day, index) in getWeekDays(
-                  getFirstDayOfWeek(Temporal.Now.plainDateISO(), 1)
-                ).map((date) => getWeekDayName(date, locale, 'long'))"
-                :key="day"
-                :value="index + 1"
-                >{{ day }}</ion-select-option
-              >
+              <ion-select-option value="auto">Auto (today as last day)</ion-select-option>
+              <ion-select-option v-for="(day, index) in getWeekDays(
+                getFirstDayOfWeek(Temporal.Now.plainDateISO(), 1)
+              ).map((date) => getWeekDayName(date, locale, 'long'))" :key="day" :value="index + 1">{{ day
+                }}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-item-group>
@@ -244,6 +233,26 @@ async function obtainAccessToken() {
   const loginRequest = {
     scopes: ["Files.ReadWrite.AppFolder"],
   };
+
+  let activeAccount = msalInstance.getActiveAccount();
+  if (!activeAccount) {
+    const accounts = msalInstance.getAllAccounts();
+    if (accounts.length > 0) {
+      activeAccount = accounts[0];
+      msalInstance.setActiveAccount(activeAccount);
+    }
+  }
+
+  if (activeAccount) {
+    try {
+      const tokenRequest = { ...loginRequest, account: activeAccount };
+      const tokenResponse = await msalInstance.acquireTokenSilent(tokenRequest);
+      return tokenResponse.accessToken;
+    } catch (error) {
+      console.error("Silent token acquisition failed", error);
+    }
+  }
+
   const loginResponse = await msalInstance.loginPopup(loginRequest);
   msalInstance.setActiveAccount(loginResponse.account);
   const tokenRequest = { ...loginRequest, account: loginResponse.account };
