@@ -69,7 +69,7 @@
           <ion-item>
             <ion-icon slot="start" :icon="hammerOutline"></ion-icon>
             <ion-label> Version </ion-label>
-            <ion-note slot="end" color="medium">0.0.0</ion-note>
+            <ion-note slot="end" color="medium">{{ APP_VERSION }}</ion-note>
           </ion-item>
         </ion-item-group>
       </ion-list>
@@ -115,6 +115,8 @@ import { PublicClientApplication } from "@azure/msal-browser";
 
 const APPROOT_API_ENDPOINT =
   "https://graph.microsoft.com/v1.0/me/drive/special/approot";
+
+const APP_VERSION = __APP_VERSION__;
 
 const locale = ref(navigator.language ?? "en-US");
 
