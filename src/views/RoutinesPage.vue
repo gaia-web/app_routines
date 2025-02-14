@@ -30,7 +30,7 @@
             :disabled="isLastSlideActive">
             <ion-icon slot="icon-only" :icon="arrowForward"></ion-icon>
           </ion-button>
-          <ion-button title="Toggle View">
+          <ion-button title="Toggle View" @click="toggleMonthlyView()">
             <ion-icon slot="icon-only" :icon="calendar"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -216,6 +216,10 @@ onIonViewDidEnter(async () => {
   };
   initializeSwiperIndex();
 });
+
+const toggleMonthlyView = () => {
+  alert("The feature is not yet ready.");
+}
 
 const toggleEditingView = () => {
   editingViewEnabled.value = !editingViewEnabled.value;
