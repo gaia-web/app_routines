@@ -53,14 +53,16 @@
                   })
                   .toLocaleString(locale)
               }}
-              -
-              {{
-                daysOfCurrentWeek?.at(-1)
-                  ?.add({
-                    weeks: currentPageIndex + 1 - pageCount,
-                  })
-                  .toLocaleString(locale)
-              }}
+              <br />
+              <ion-note>
+                to {{
+                  daysOfCurrentWeek?.at(-1)
+                    ?.add({
+                      weeks: currentPageIndex + 1 - pageCount,
+                    })
+                    .toLocaleString(locale)
+                }}
+              </ion-note>
             </ion-title>
           </ion-toolbar>
         </ion-header>
