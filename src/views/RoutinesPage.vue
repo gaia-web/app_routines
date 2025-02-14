@@ -168,7 +168,7 @@ const routineSelections = ref<boolean[]>([]);
 const swiperRef = ref<SwiperContainer>();
 const isFirstSlideActive = ref();
 const isLastSlideActive = ref();
-const pageCount = ref(2);
+const pageCount = ref(5);
 const daysOfCurrentWeek = ref<Temporal.PlainDate[]>([]);
 const currentPageIndex = ref(0);
 
@@ -246,14 +246,14 @@ const addRoutine = async () => {
 };
 
 const handleSlideChange = ({ detail: [swiper] }: CustomEvent<[Swiper]>) => {
-  currentPageIndex.value = swiper?.activeIndex ?? 0;
+  currentPageIndex.value = swiper.activeIndex ?? 0;
   isFirstSlideActive.value = swiper.isBeginning;
   isLastSlideActive.value = swiper.isEnd;
-  if (swiper.isBeginning) {
-    pageCount.value++;
+  if (currentPageIndex.value < 3) {
+    pageCount.value += 5;
     setTimeout(() => {
       swiper?.virtual.update(false);
-      swiper?.slideTo(swiper.activeIndex + 1, 0);
+      swiper?.slideTo(swiper.activeIndex + 5, 0);
     });
   }
 };
