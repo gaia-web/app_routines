@@ -8,27 +8,21 @@
       getCurrentValueLabel()
     }}</ion-text>
     <p><i>on</i> {{ day?.toLocaleString(locale) }}</p>
-    <ion-button expand="block" color="success" @click="recordValue(1)"
-      >Positive</ion-button
-    >
-    <ion-button expand="block" color="medium" @click="recordValue(0)"
-      >Neutral</ion-button
-    >
-    <ion-button expand="block" color="danger" @click="recordValue(-1)"
-      >Negative</ion-button
-    >
-    <ion-button expand="block" fill="outline" @click="recordValue(void 0)"
-      >Skip</ion-button
-    >
-    <ion-button expand="block" fill="outline" color="dark" @click="dismiss?.()"
-      >Cancel</ion-button
-    >
+    <ion-note v-if="getCurrentNotes()">
+      <q>{{ getCurrentNotes() }}</q>
+    </ion-note>
+    <ion-button expand="block" fill="clear" @click="recordNotes()">Set Notes</ion-button>
+    <ion-button expand="block" color="success" @click="recordValue(1)">Positive</ion-button>
+    <ion-button expand="block" color="medium" @click="recordValue(0)">Neutral</ion-button>
+    <ion-button expand="block" color="danger" @click="recordValue(-1)">Negative</ion-button>
+    <ion-button expand="block" fill="outline" @click="recordValue(void 0)">Skip</ion-button>
+    <ion-button expand="block" fill="outline" color="dark" @click="dismiss?.()">Cancel</ion-button>
   </ion-content>
 </template>
 
 <script setup lang="ts">
 import { Routine } from "@/utils/app-data";
-import { IonButton, IonContent, IonText } from "@ionic/vue";
+import { IonButton, IonContent, IonText, IonNote } from "@ionic/vue";
 import { Temporal } from "@js-temporal/polyfill";
 import { Ref, ref } from "vue";
 
@@ -59,6 +53,28 @@ const recordValue = (value?: number) => {
   };
   props.dismiss?.();
 };
+
+const recordNotes = () => {
+  const record = getRecord();
+  if (!record) {
+    return;
+  }
+  const key = props.day?.toString();
+  if (!key) {
+    return;
+  }
+  if (!props.routine?.value.records) {
+    return;
+  }
+  const notes = prompt("Write the notes here", getCurrentNotes());
+  if (notes == null) {
+    return;
+  }
+  props.routine.value.records[key] = {
+    ...record,
+    notes,
+  };
+}
 
 const getCurrentValueColor = () => {
   const record = getRecord();
@@ -96,6 +112,11 @@ const getCurrentValueLabel = () => {
   }
   return;
 };
+
+const getCurrentNotes = () => {
+  const record = getRecord();
+  return record?.notes;
+}
 
 const getRecord = () => {
   const key = props.day?.toString();
