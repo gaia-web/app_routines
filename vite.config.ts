@@ -19,15 +19,15 @@ export default defineConfig({
         background_color: "#ffffff",
         icons: [
           {
-            src: "./icon.png",
+            src: "./icon.webp",
             sizes: "144x144",
-            type: "image/png",
+            type: "image/webp",
             purpose: "any maskable",
           },
           {
-            src: "./splash.png",
+            src: "./splash.webp",
             sizes: "2732x2732",
-            type: "image/png",
+            type: "image/webp",
           },
         ],
       },
